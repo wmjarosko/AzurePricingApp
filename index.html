@@ -61,9 +61,24 @@
             <div>
                 <label for="region" class="block text-sm font-medium text-gray-700">Azure Region</label>
                 <select id="region" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                    <option value="centralus">Central US</option>
                     <option value="eastus">East US</option>
+                    <option value="eastus2">East US 2</option>
+                    <option value="northcentralus">North Central US</option>
+                    <option value="southcentralus">South Central US</option>
+                    <option value="westcentralus">West Central US</option>
                     <option value="westus">West US</option>
-                    <!-- Add more regions as needed -->
+                    <option value="westus2">West US 2</option>
+                    <option value="westus3">West US 3</option>
+                </select>
+            </div>
+
+            <!-- OS Dropdown -->
+            <div>
+                <label for="operating-system" class="block text-sm font-medium text-gray-700">Operating System</label>
+                <select id="operating-system" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                    <option value="windows">Windows</option>
+                    <option value="linux">Linux</option>
                 </select>
             </div>
 
@@ -107,7 +122,8 @@
         const resultsContent = document.getElementById('results-content');
         const priceToleranceInput = document.getElementById('price-tolerance');
         const regionInput = document.getElementById('region');
-        const environmentNameInput = document.getElementById('environment-name'); // New input field
+        const environmentNameInput = document.getElementById('environment-name');
+        const osInput = document.getElementById('operating-system'); // New OS input
 
         // New server count input fields
         const sqlServerCountInput = document.getElementById('sql-server-count');
@@ -119,7 +135,7 @@
         });
 
         // This is the new function that calls your Flask backend
-        const fetchRealApiData = async (environmentName, subscriberCount, priceTolerance, region, serverCounts) => {
+        const fetchRealApiData = async (environmentName, subscriberCount, priceTolerance, region, operatingSystem, serverCounts) => {
             try {
                 const response = await fetch('http://127.0.0.1:5000/calculate', {
                     method: 'POST',
@@ -127,10 +143,11 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                        environment_name: environmentName, // Pass the new variable
+                        environment_name: environmentName,
                         subscriber_count: subscriberCount,
                         price_tolerance: priceTolerance,
                         region: region,
+                        operating_system: operatingSystem, // Pass the new variable
                         server_counts: serverCounts
                     })
                 });
@@ -149,10 +166,11 @@
         // Handle button click event
         calculateBtn.addEventListener('click', async () => {
             // Get values from inputs
-            const environmentName = environmentNameInput.value || 'Untitled Environment'; // Default if empty
+            const environmentName = environmentNameInput.value || 'Untitled Environment';
             const subscriberCount = parseInt(slider.value);
             const priceTolerance = priceToleranceInput.value;
             const region = regionInput.value;
+            const operatingSystem = osInput.value;
             const serverCounts = {
                 "SQL Server": parseInt(sqlServerCountInput.value),
                 "Batch Processor": parseInt(batchProcessorCountInput.value)
@@ -170,7 +188,7 @@
             `;
 
             // Call the real API
-            const result = await fetchRealApiData(environmentName, subscriberCount, priceTolerance, region, serverCounts);
+            const result = await fetchRealApiData(environmentName, subscriberCount, priceTolerance, region, operatingSystem, serverCounts);
 
             // Check for an error response
             if (result.error) {
@@ -187,6 +205,7 @@
                         <li>Subscriber Count: <strong>${subscriberCount.toLocaleString()}</strong></li>
                         <li>Price Tolerance: <strong>${priceTolerance.charAt(0).toUpperCase() + priceTolerance.slice(1)}</strong></li>
                         <li>Azure Region: <strong>${region.toUpperCase()}</strong></li>
+                        <li>Operating System: <strong>${result.operating_system.charAt(0).toUpperCase() + result.operating_system.slice(1)}</strong></li>
                     </ul>
                 </div>
                 <div class="bg-gray-50 p-4 rounded-md">

@@ -30,9 +30,10 @@ def calculate_cost():
     subscriber_count = data.get('subscriber_count')
     price_tolerance = data.get('price_tolerance')
     region = data.get('region')
+    operating_system = data.get('operating_system')
     server_counts = data.get('server_counts')
 
-    if not all([environment_name, subscriber_count, price_tolerance, region, server_counts]):
+    if not all([environment_name, subscriber_count, price_tolerance, region, operating_system, server_counts]):
         return jsonify({"error": "Missing required parameters"}), 400
 
     # Call your main pricing function with the data from the front-end
@@ -41,11 +42,13 @@ def calculate_cost():
         subscriber_count=int(subscriber_count),
         price_tolerance=price_tolerance,
         region=region,
+        operating_system=operating_system,
         server_counts=server_counts
     )
 
     response = {
         "environment_name": environment_name,
+        "operating_system": operating_system,
         "recommendations": recommendations,
         "total_cost": total_cost
     }
