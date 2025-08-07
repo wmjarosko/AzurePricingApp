@@ -189,7 +189,7 @@ def fetch_all_storage_prices(region="eastus"):
     return all_prices
 
 # This function has been updated to accept the `server_counts` dictionary
-def get_total_estimated_monthly_cost(subscriber_count, price_tolerance, region="eastus", hours_in_month=730, server_counts={}):
+def get_total_estimated_monthly_cost(environment_name, subscriber_count, price_tolerance, region="eastus", hours_in_month=730, server_counts={}):
     """
     Calculates the total estimated monthly cost for an environment using a pre-fetched price list and dynamic server counts.
     """
@@ -204,7 +204,7 @@ def get_total_estimated_monthly_cost(subscriber_count, price_tolerance, region="
     recommendations = get_azure_recommendations(subscriber_count, price_tolerance)
     total_cost = 0.0
     
-    print(f"\n--- Pricing Estimate for {subscriber_count} Subscribers ({price_tolerance.upper()}) ---")
+    print(f"\n--- Pricing Estimate for {environment_name}: {subscriber_count} Subscribers ({price_tolerance.upper()}) ---")
 
     itemized_costs = {}
     
