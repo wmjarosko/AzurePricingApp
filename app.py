@@ -31,12 +31,16 @@ def calculate_cost():
     price_tolerance = data.get('price_tolerance')
     region = data.get('region')
     operating_system = data.get('operating_system')
-    server_counts = data.get('server_counts')
+    server_configs = data.get('server_configs')
 
-    if not all([environment_name, subscriber_count, price_tolerance, region, operating_system, server_counts]):
+    if not all([environment_name, subscriber_count, price_tolerance, region, operating_system, server_configs]):
         return jsonify({"error": "Missing required parameters"}), 400
 
+    # Extract counts from the server_configs object for the pricing script
+    server_counts = {name: config['count'] for name, config in server_configs.items()}
+
     # Call your main pricing function with the data from the front-end
+    # Note: pricing_script is not yet updated to handle server_configs, this will be done in Phase 2
     recommendations, total_cost = get_total_estimated_monthly_cost(
         environment_name=environment_name,
         subscriber_count=int(subscriber_count),
@@ -45,6 +49,11 @@ def calculate_cost():
         operating_system=operating_system,
         server_counts=server_counts
     )
+
+    # For now, just echo back the categories in the recommendations
+    for server_name, config in server_configs.items():
+        if server_name in recommendations:
+            recommendations[server_name]['category'] = config.get('category', 'N/A')
 
     response = {
         "environment_name": environment_name,
