@@ -26,9 +26,104 @@ SERVER_CATALOG = [
         }
     },
     {
-        "name": "Batch Processor",
+        "name": "Batch/App Server",
         "workload_type": "application",
         "description": "Windows server for nightly batch jobs.",
+        "tiers": {
+            "cost-optimized": {
+                "small_payer_threshold": "Standard_B2s",
+                "large_payer_threshold": "Standard_B4ms"
+            },
+            "balanced": {
+                "small_payer_threshold": "Standard_D2s_v3",
+                "large_payer_threshold": "Standard_D4s_v3"
+            },
+            "performance-first": {
+                "small_payer_threshold": "Standard_F4s_v2",
+                "large_payer_threshold": "Standard_F8s_v2"
+            }
+        }
+    },
+    {
+        "name": "API/FXI Server",
+        "workload_type": "application",
+        "description": "Server for API/FXI workloads.",
+        "tiers": {
+            "cost-optimized": {
+                "small_payer_threshold": "Standard_B2s",
+                "large_payer_threshold": "Standard_B4ms"
+            },
+            "balanced": {
+                "small_payer_threshold": "Standard_D2s_v3",
+                "large_payer_threshold": "Standard_D4s_v3"
+            },
+            "performance-first": {
+                "small_payer_threshold": "Standard_F4s_v2",
+                "large_payer_threshold": "Standard_F8s_v2"
+            }
+        }
+    },
+    {
+        "name": "HIPAA Gateway Server",
+        "workload_type": "application",
+        "description": "Server for HIPAA Gateway workloads.",
+        "tiers": {
+            "cost-optimized": {
+                "small_payer_threshold": "Standard_B2s",
+                "large_payer_threshold": "Standard_B4ms"
+            },
+            "balanced": {
+                "small_payer_threshold": "Standard_D2s_v3",
+                "large_payer_threshold": "Standard_D4s_v3"
+            },
+            "performance-first": {
+                "small_payer_threshold": "Standard_F4s_v2",
+                "large_payer_threshold": "Standard_F8s_v2"
+            }
+        }
+    },
+    {
+        "name": "WorkFlow Server",
+        "workload_type": "application",
+        "description": "Server for WorkFlow workloads.",
+        "tiers": {
+            "cost-optimized": {
+                "small_payer_threshold": "Standard_B2s",
+                "large_payer_threshold": "Standard_B4ms"
+            },
+            "balanced": {
+                "small_payer_threshold": "Standard_D2s_v3",
+                "large_payer_threshold": "Standard_D4s_v3"
+            },
+            "performance-first": {
+                "small_payer_threshold": "Standard_F4s_v2",
+                "large_payer_threshold": "Standard_F8s_v2"
+            }
+        }
+    },
+    {
+        "name": "NetworX Server",
+        "workload_type": "application",
+        "description": "Server for NetworX workloads.",
+        "tiers": {
+            "cost-optimized": {
+                "small_payer_threshold": "Standard_B2s",
+                "large_payer_threshold": "Standard_B4ms"
+            },
+            "balanced": {
+                "small_payer_threshold": "Standard_D2s_v3",
+                "large_payer_threshold": "Standard_D4s_v3"
+            },
+            "performance-first": {
+                "small_payer_threshold": "Standard_F4s_v2",
+                "large_payer_threshold": "Standard_F8s_v2"
+            }
+        }
+    },
+    {
+        "name": "Surround Server",
+        "workload_type": "application",
+        "description": "Server for Surround workloads.",
         "tiers": {
             "cost-optimized": {
                 "small_payer_threshold": "Standard_B2s",
@@ -104,8 +199,7 @@ def fetch_all_vm_prices(region="eastus", operating_system="windows"):
     os_filter = ""
     if operating_system == "windows":
         os_filter = " and contains(productName, 'Windows')"
-    elif operating_system == "linux":
-        os_filter = " and not contains(productName, 'Windows')"
+    # For Linux, we don't add an OS filter, as the base price is typically the Linux price.
 
     filter_string = (
         f"serviceName eq 'Virtual Machines' and "

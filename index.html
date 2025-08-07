@@ -88,11 +88,31 @@
             <div class="space-y-4">
                 <div class="flex items-center space-x-4">
                     <label for="sql-server-count" class="block text-sm font-medium text-gray-700 w-1/2">SQL Server</label>
-                    <input type="number" id="sql-server-count" value="1" min="1" class="mt-1 block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 text-center">
+                    <input type="number" id="sql-server-count" value="1" min="0" class="mt-1 block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 text-center">
                 </div>
                 <div class="flex items-center space-x-4">
-                    <label for="batch-processor-count" class="block text-sm font-medium text-gray-700 w-1/2">Batch Processor</label>
-                    <input type="number" id="batch-processor-count" value="2" min="1" class="mt-1 block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 text-center">
+                    <label for="batch-app-server-count" class="block text-sm font-medium text-gray-700 w-1/2">Batch/App Server</label>
+                    <input type="number" id="batch-app-server-count" value="1" min="0" class="mt-1 block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 text-center">
+                </div>
+                <div class="flex items-center space-x-4">
+                    <label for="api-fxi-server-count" class="block text-sm font-medium text-gray-700 w-1/2">API/FXI Server</label>
+                    <input type="number" id="api-fxi-server-count" value="0" min="0" class="mt-1 block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 text-center">
+                </div>
+                <div class="flex items-center space-x-4">
+                    <label for="hipaa-gateway-server-count" class="block text-sm font-medium text-gray-700 w-1/2">HIPAA Gateway Server</label>
+                    <input type="number" id="hipaa-gateway-server-count" value="0" min="0" class="mt-1 block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 text-center">
+                </div>
+                <div class="flex items-center space-x-4">
+                    <label for="workflow-server-count" class="block text-sm font-medium text-gray-700 w-1/2">WorkFlow Server</label>
+                    <input type="number" id="workflow-server-count" value="0" min="0" class="mt-1 block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 text-center">
+                </div>
+                <div class="flex items-center space-x-4">
+                    <label for="networx-server-count" class="block text-sm font-medium text-gray-700 w-1/2">NetworX Server</label>
+                    <input type="number" id="networx-server-count" value="0" min="0" class="mt-1 block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 text-center">
+                </div>
+                <div class="flex items-center space-x-4">
+                    <label for="surround-server-count" class="block text-sm font-medium text-gray-700 w-1/2">Surround Server</label>
+                    <input type="number" id="surround-server-count" value="0" min="0" class="mt-1 block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 text-center">
                 </div>
             </div>
 
@@ -124,11 +144,16 @@
         const priceToleranceInput = document.getElementById('price-tolerance');
         const regionInput = document.getElementById('region');
         const environmentNameInput = document.getElementById('environment-name');
-        const osInput = document.getElementById('operating-system'); // New OS input
+        const osInput = document.getElementById('operating-system');
 
-        // New server count input fields
+        // Server count input fields
         const sqlServerCountInput = document.getElementById('sql-server-count');
-        const batchProcessorCountInput = document.getElementById('batch-processor-count');
+        const batchAppServerCountInput = document.getElementById('batch-app-server-count');
+        const apiFxiServerCountInput = document.getElementById('api-fxi-server-count');
+        const hipaaGatewayServerCountInput = document.getElementById('hipaa-gateway-server-count');
+        const workflowServerCountInput = document.getElementById('workflow-server-count');
+        const networxServerCountInput = document.getElementById('networx-server-count');
+        const surroundServerCountInput = document.getElementById('surround-server-count');
 
         // Link the slider and the text input field
         slider.addEventListener('input', (event) => {
@@ -148,7 +173,7 @@
                         subscriber_count: subscriberCount,
                         price_tolerance: priceTolerance,
                         region: region,
-                        operating_system: operatingSystem, // Pass the new variable
+                        operating_system: operatingSystem,
                         server_counts: serverCounts
                     })
                 });
@@ -174,7 +199,12 @@
             const operatingSystem = osInput.value;
             const serverCounts = {
                 "SQL Server": parseInt(sqlServerCountInput.value),
-                "Batch Processor": parseInt(batchProcessorCountInput.value)
+                "Batch/App Server": parseInt(batchAppServerCountInput.value),
+                "API/FXI Server": parseInt(apiFxiServerCountInput.value),
+                "HIPAA Gateway Server": parseInt(hipaaGatewayServerCountInput.value),
+                "WorkFlow Server": parseInt(workflowServerCountInput.value),
+                "NetworX Server": parseInt(networxServerCountInput.value),
+                "Surround Server": parseInt(surroundServerCountInput.value)
             };
 
             // Show a loading message
