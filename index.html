@@ -31,6 +31,11 @@
 
         <!-- Input Form -->
         <div class="space-y-6">
+            <!-- Environment Name Input -->
+            <div>
+                <label for="environment-name" class="block text-sm font-medium text-gray-700">Environment Name</label>
+                <input type="text" id="environment-name" placeholder="e.g., Production, Staging" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+            </div>
             <!-- Subscriber Count Input with Slider -->
             <div>
                 <label for="subscriber-count-display" class="block text-sm font-medium text-gray-700">Subscriber Count</label>
@@ -102,6 +107,7 @@
         const resultsContent = document.getElementById('results-content');
         const priceToleranceInput = document.getElementById('price-tolerance');
         const regionInput = document.getElementById('region');
+        const environmentNameInput = document.getElementById('environment-name'); // New input field
 
         // New server count input fields
         const sqlServerCountInput = document.getElementById('sql-server-count');
@@ -113,7 +119,7 @@
         });
 
         // This is the new function that calls your Flask backend
-        const fetchRealApiData = async (subscriberCount, priceTolerance, region, serverCounts) => {
+        const fetchRealApiData = async (environmentName, subscriberCount, priceTolerance, region, serverCounts) => {
             try {
                 const response = await fetch('http://127.0.0.1:5000/calculate', {
                     method: 'POST',
@@ -121,10 +127,11 @@
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
+                        environment_name: environmentName, // Pass the new variable
                         subscriber_count: subscriberCount,
                         price_tolerance: priceTolerance,
                         region: region,
-                        server_counts: serverCounts // Pass the dynamic server counts
+                        server_counts: serverCounts
                     })
                 });
 
@@ -142,6 +149,7 @@
         // Handle button click event
         calculateBtn.addEventListener('click', async () => {
             // Get values from inputs
+            const environmentName = environmentNameInput.value || 'Untitled Environment'; // Default if empty
             const subscriberCount = parseInt(slider.value);
             const priceTolerance = priceToleranceInput.value;
             const region = regionInput.value;
@@ -162,7 +170,7 @@
             `;
 
             // Call the real API
-            const result = await fetchRealApiData(subscriberCount, priceTolerance, region, serverCounts);
+            const result = await fetchRealApiData(environmentName, subscriberCount, priceTolerance, region, serverCounts);
 
             // Check for an error response
             if (result.error) {
@@ -175,6 +183,7 @@
                 <div class="bg-gray-50 p-4 rounded-md">
                     <h3 class="text-lg font-semibold text-gray-700 mb-2">Configuration Details</h3>
                     <ul class="list-disc list-inside space-y-1 text-gray-600">
+                        <li>Environment: <strong>${result.environment_name}</strong></li>
                         <li>Subscriber Count: <strong>${subscriberCount.toLocaleString()}</strong></li>
                         <li>Price Tolerance: <strong>${priceTolerance.charAt(0).toUpperCase() + priceTolerance.slice(1)}</strong></li>
                         <li>Azure Region: <strong>${region.toUpperCase()}</strong></li>

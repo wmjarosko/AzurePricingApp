@@ -26,23 +26,26 @@ def index():
 def calculate_cost():
     data = request.get_json()
 
+    environment_name = data.get('environment_name')
     subscriber_count = data.get('subscriber_count')
     price_tolerance = data.get('price_tolerance')
     region = data.get('region')
-    server_counts = data.get('server_counts') # New variable for dynamic server counts
+    server_counts = data.get('server_counts')
 
-    if not all([subscriber_count, price_tolerance, region, server_counts]):
+    if not all([environment_name, subscriber_count, price_tolerance, region, server_counts]):
         return jsonify({"error": "Missing required parameters"}), 400
 
     # Call your main pricing function with the data from the front-end
     recommendations, total_cost = get_total_estimated_monthly_cost(
+        environment_name=environment_name,
         subscriber_count=int(subscriber_count),
         price_tolerance=price_tolerance,
         region=region,
-        server_counts=server_counts # Pass the new variable
+        server_counts=server_counts
     )
 
     response = {
+        "environment_name": environment_name,
         "recommendations": recommendations,
         "total_cost": total_cost
     }
