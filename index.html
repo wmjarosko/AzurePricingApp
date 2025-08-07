@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azure Pricing Estimator</title>
+    <!-- Use Tailwind CSS for a clean, modern look -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom styles for the slider */
+        input[type="range"]::-webkit-slider-thumb {
+            background-color: #4f46e5;
+        }
+        input[type="range"]::-moz-range-thumb {
+            background-color: #4f46e5;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+    <div class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-2xl">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">
+            Azure Pricing Estimator
+        </h1>
+
+        <p class="text-center text-gray-600 mb-8">
+            Get instant, tailored cost estimates for your payer's cloud journey.
+        </p>
+
+        <!-- Input Form -->
+        <div class="space-y-6">
+            <!-- Subscriber Count Input with Slider -->
+            <div>
+                <label for="subscriber-count-display" class="block text-sm font-medium text-gray-700">Subscriber Count</label>
+                <input type="range" id="subscriber-slider" min="500000" max="5000000" step="500000" value="2500000" class="mt-1 w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                <div class="flex justify-between text-xs text-gray-500 mt-2">
+                    <span>500,000</span>
+                    <span>5,000,000</span>
+                </div>
+                <input type="text" id="subscriber-count-display" value="2,500,000" readonly class="mt-2 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm p-2 text-center font-bold">
+            </div>
+
+            <!-- Price Tolerance Dropdown -->
+            <div>
+                <label for="price-tolerance" class="block text-sm font-medium text-gray-700">Price Tolerance</label>
+                <select id="price-tolerance" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                    <option value="balanced">Balanced</option>
+                    <option value="cost-optimized">Cost-Optimized</option>
+                    <option value="performance-first">Performance-First</option>
+                </select>
+            </div>
+
+            <!-- Region Dropdown -->
+            <div>
+                <label for="region" class="block text-sm font-medium text-gray-700">Azure Region</label>
+                <select id="region" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2">
+                    <option value="eastus">East US</option>
+                    <option value="westus">West US</option>
+                    <!-- Add more regions as needed -->
+                </select>
+            </div>
+
+            <!-- Server Quantity Inputs -->
+            <h3 class="text-lg font-semibold text-gray-700 pt-4">Server Quantities</h3>
+            <div class="space-y-4">
+                <div class="flex items-center space-x-4">
+                    <label for="sql-server-count" class="block text-sm font-medium text-gray-700 w-1/2">SQL Server</label>
+                    <input type="number" id="sql-server-count" value="1" min="1" class="mt-1 block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 text-center">
+                </div>
+                <div class="flex items-center space-x-4">
+                    <label for="batch-processor-count" class="block text-sm font-medium text-gray-700 w-1/2">Batch Processor</label>
+                    <input type="number" id="batch-processor-count" value="2" min="1" class="mt-1 block w-1/2 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 text-center">
+                </div>
+            </div>
+
+            <!-- Calculate Button -->
+            <button id="calculate-btn" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                Calculate Estimate
+            </button>
+        </div>
+
+        <!-- Results Display Area -->
+        <div id="results-area" class="mt-8 pt-6 border-t border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Results</h2>
+            <div id="results-content" class="space-y-4">
+                <!-- Results will be dynamically inserted here -->
+                <p class="text-gray-500">
+                    Enter your details and click "Calculate" to see the estimated costs.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Script to handle the interaction -->
+    <script>
+        const slider = document.getElementById('subscriber-slider');
+        const numberInput = document.getElementById('subscriber-count-display');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const resultsContent = document.getElementById('results-content');
+        const priceToleranceInput = document.getElementById('price-tolerance');
+        const regionInput = document.getElementById('region');
+
+        // New server count input fields
+        const sqlServerCountInput = document.getElementById('sql-server-count');
+        const batchProcessorCountInput = document.getElementById('batch-processor-count');
+
+        // Link the slider and the text input field
+        slider.addEventListener('input', (event) => {
+            numberInput.value = parseInt(event.target.value).toLocaleString();
+        });
+
+        // This is the new function that calls your Flask backend
+        const fetchRealApiData = async (subscriberCount, priceTolerance, region, serverCounts) => {
+            try {
+                const response = await fetch('http://127.0.0.1:5000/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        subscriber_count: subscriberCount,
+                        price_tolerance: priceTolerance,
+                        region: region,
+                        server_counts: serverCounts // Pass the dynamic server counts
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error("Failed to fetch data:", error);
+                return { error: "Failed to connect to the backend server. Please ensure your Flask app is running." };
+            }
+        };
+        
+        // Handle button click event
+        calculateBtn.addEventListener('click', async () => {
+            // Get values from inputs
+            const subscriberCount = parseInt(slider.value);
+            const priceTolerance = priceToleranceInput.value;
+            const region = regionInput.value;
+            const serverCounts = {
+                "SQL Server": parseInt(sqlServerCountInput.value),
+                "Batch Processor": parseInt(batchProcessorCountInput.value)
+            };
+
+            // Show a loading message
+            resultsContent.innerHTML = `
+                <div class="flex items-center space-x-2 text-indigo-600">
+                    <svg class="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <span>Calculating...</span>
+                </div>
+            `;
+
+            // Call the real API
+            const result = await fetchRealApiData(subscriberCount, priceTolerance, region, serverCounts);
+
+            // Check for an error response
+            if (result.error) {
+                resultsContent.innerHTML = `<p class="text-red-500 font-bold">${result.error}</p>`;
+                return;
+            }
+
+            // Generate the results HTML
+            let resultHtml = `
+                <div class="bg-gray-50 p-4 rounded-md">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Configuration Details</h3>
+                    <ul class="list-disc list-inside space-y-1 text-gray-600">
+                        <li>Subscriber Count: <strong>${subscriberCount.toLocaleString()}</strong></li>
+                        <li>Price Tolerance: <strong>${priceTolerance.charAt(0).toUpperCase() + priceTolerance.slice(1)}</strong></li>
+                        <li>Azure Region: <strong>${region.toUpperCase()}</strong></li>
+                    </ul>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-md">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">Itemized Monthly Cost</h3>
+                    <ul class="space-y-1 text-gray-600">
+            `;
+
+            for (const serverName in result.recommendations) {
+                const rec = result.recommendations[serverName];
+                resultHtml += `
+                    <li>- ${serverName} (${rec.sku}) x ${rec.count}: <strong>$${rec.monthly_cost.toFixed(2)}</strong> per month</li>
+                `;
+            }
+
+            resultHtml += `
+                    </ul>
+                </div>
+                <div class="bg-indigo-50 p-4 rounded-md text-center">
+                    <span class="text-xl font-bold text-indigo-700">TOTAL ESTIMATED MONTHLY COST: $${result.total_cost.toFixed(2)}</span>
+                </div>
+            `;
+
+            resultsContent.innerHTML = resultHtml;
+        });
+    </script>
+</body>
+</html>
