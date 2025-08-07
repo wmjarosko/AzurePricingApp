@@ -94,18 +94,24 @@ def get_azure_recommendations(subscriber_count, price_tolerance):
 
     return recommendations
 
-def fetch_all_vm_prices(region="eastus"):
+def fetch_all_vm_prices(region="eastus", operating_system="windows"):
     """
     Fetches all VM prices for a given region in a single, paginated API call.
     Returns a dictionary mapping SKU names to their hourly prices.
     """
     api_url = "https://prices.azure.com/api/retail/prices"
     
+    os_filter = ""
+    if operating_system == "windows":
+        os_filter = " and contains(productName, 'Windows')"
+    elif operating_system == "linux":
+        os_filter = " and not contains(productName, 'Windows')"
+
     filter_string = (
         f"serviceName eq 'Virtual Machines' and "
         f"armRegionName eq '{region}' and "
         f"priceType eq 'Consumption' and "
-        f"unitOfMeasure eq '1 Hour'"
+        f"unitOfMeasure eq '1 Hour'{os_filter}"
     )
     
     all_prices = {}
@@ -189,12 +195,12 @@ def fetch_all_storage_prices(region="eastus"):
     return all_prices
 
 # This function has been updated to accept the `server_counts` dictionary
-def get_total_estimated_monthly_cost(environment_name, subscriber_count, price_tolerance, region="eastus", hours_in_month=730, server_counts={}):
+def get_total_estimated_monthly_cost(environment_name, subscriber_count, price_tolerance, region="eastus", operating_system="windows", hours_in_month=730, server_counts={}):
     """
     Calculates the total estimated monthly cost for an environment using a pre-fetched price list and dynamic server counts.
     """
     # Fetch all VM and storage prices once before calculating
-    vm_prices = fetch_all_vm_prices(region)
+    vm_prices = fetch_all_vm_prices(region=region, operating_system=operating_system)
     storage_prices = fetch_all_storage_prices(region)
     
     if not vm_prices or not storage_prices:
