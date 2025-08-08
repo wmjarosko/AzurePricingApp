@@ -3,44 +3,42 @@ import json
 import time
 
 # A dynamic catalog of server types with their characteristics.
-# The `server_count` field has been removed as it will now be provided by the front-end.
 SERVER_CATALOG = [
     {
         "name": "SQL Server",
         "workload_type": "database",
         "description": "Primary database server for OLTP workloads.",
-        "tiers": {
-            "cost-optimized": {
-                # Updated from Standard_DS2_v2 to a newer, supported SKU
-                "small_payer_threshold": "Standard_D2as_v5", 
-                "large_payer_threshold": "Standard_DS4_v2"   
+        "categories": {
+            "general-purpose": {
+                "small_payer_threshold": "Standard_D2s_v5",
+                "large_payer_threshold": "Standard_D16s_v5"
             },
-            "balanced": {
-                "small_payer_threshold": "Standard_D4s_v3",
-                "large_payer_threshold": "Standard_D8s_v3"
+            "memory-optimized": {
+                "small_payer_threshold": "Standard_E2s_v5",
+                "large_payer_threshold": "Standard_E16s_v5"
             },
-            "performance-first": {
-                "small_payer_threshold": "Standard_E8s_v3",
-                "large_payer_threshold": "Standard_E16s_v3"
+            "compute-optimized": {
+                "small_payer_threshold": "Standard_F2s_v2",
+                "large_payer_threshold": "Standard_F16s_v2"
             }
         }
     },
     {
         "name": "Batch/App Server",
         "workload_type": "application",
-        "description": "Windows server for nightly batch jobs.",
-        "tiers": {
-            "cost-optimized": {
-                "small_payer_threshold": "Standard_B2s",
-                "large_payer_threshold": "Standard_B4ms"
+        "description": "Server for batch and application workloads.",
+        "categories": {
+            "general-purpose": {
+                "small_payer_threshold": "Standard_D2as_v4",
+                "large_payer_threshold": "Standard_D16as_v4"
             },
-            "balanced": {
-                "small_payer_threshold": "Standard_D2s_v3",
-                "large_payer_threshold": "Standard_D4s_v3"
+            "memory-optimized": {
+                "small_payer_threshold": "Standard_E2as_v5",
+                "large_payer_threshold": "Standard_E16as_v5"
             },
-            "performance-first": {
-                "small_payer_threshold": "Standard_F4s_v2",
-                "large_payer_threshold": "Standard_F8s_v2"
+            "compute-optimized": {
+                "small_payer_threshold": "Standard_F2s_v2",
+                "large_payer_threshold": "Standard_F16s_v2"
             }
         }
     },
@@ -48,18 +46,18 @@ SERVER_CATALOG = [
         "name": "API/FXI Server",
         "workload_type": "application",
         "description": "Server for API/FXI workloads.",
-        "tiers": {
-            "cost-optimized": {
-                "small_payer_threshold": "Standard_B2s",
-                "large_payer_threshold": "Standard_B4ms"
+        "categories": {
+            "general-purpose": {
+                "small_payer_threshold": "Standard_D2as_v4",
+                "large_payer_threshold": "Standard_D16as_v4"
             },
-            "balanced": {
-                "small_payer_threshold": "Standard_D2s_v3",
-                "large_payer_threshold": "Standard_D4s_v3"
+            "memory-optimized": {
+                "small_payer_threshold": "Standard_E2as_v5",
+                "large_payer_threshold": "Standard_E16as_v5"
             },
-            "performance-first": {
-                "small_payer_threshold": "Standard_F4s_v2",
-                "large_payer_threshold": "Standard_F8s_v2"
+            "compute-optimized": {
+                "small_payer_threshold": "Standard_F2s_v2",
+                "large_payer_threshold": "Standard_F16s_v2"
             }
         }
     },
@@ -67,18 +65,18 @@ SERVER_CATALOG = [
         "name": "HIPAA Gateway Server",
         "workload_type": "application",
         "description": "Server for HIPAA Gateway workloads.",
-        "tiers": {
-            "cost-optimized": {
-                "small_payer_threshold": "Standard_B2s",
-                "large_payer_threshold": "Standard_B4ms"
+        "categories": {
+            "general-purpose": {
+                "small_payer_threshold": "Standard_D2as_v4",
+                "large_payer_threshold": "Standard_D16as_v4"
             },
-            "balanced": {
-                "small_payer_threshold": "Standard_D2s_v3",
-                "large_payer_threshold": "Standard_D4s_v3"
+            "memory-optimized": {
+                "small_payer_threshold": "Standard_E2as_v5",
+                "large_payer_threshold": "Standard_E16as_v5"
             },
-            "performance-first": {
-                "small_payer_threshold": "Standard_F4s_v2",
-                "large_payer_threshold": "Standard_F8s_v2"
+            "compute-optimized": {
+                "small_payer_threshold": "Standard_F2s_v2",
+                "large_payer_threshold": "Standard_F16s_v2"
             }
         }
     },
@@ -86,18 +84,18 @@ SERVER_CATALOG = [
         "name": "WorkFlow Server",
         "workload_type": "application",
         "description": "Server for WorkFlow workloads.",
-        "tiers": {
-            "cost-optimized": {
-                "small_payer_threshold": "Standard_B2s",
-                "large_payer_threshold": "Standard_B4ms"
+        "categories": {
+            "general-purpose": {
+                "small_payer_threshold": "Standard_D2as_v4",
+                "large_payer_threshold": "Standard_D16as_v4"
             },
-            "balanced": {
-                "small_payer_threshold": "Standard_D2s_v3",
-                "large_payer_threshold": "Standard_D4s_v3"
+            "memory-optimized": {
+                "small_payer_threshold": "Standard_E2as_v5",
+                "large_payer_threshold": "Standard_E16as_v5"
             },
-            "performance-first": {
-                "small_payer_threshold": "Standard_F4s_v2",
-                "large_payer_threshold": "Standard_F8s_v2"
+            "compute-optimized": {
+                "small_payer_threshold": "Standard_F2s_v2",
+                "large_payer_threshold": "Standard_F16s_v2"
             }
         }
     },
@@ -105,18 +103,18 @@ SERVER_CATALOG = [
         "name": "NetworX Server",
         "workload_type": "application",
         "description": "Server for NetworX workloads.",
-        "tiers": {
-            "cost-optimized": {
-                "small_payer_threshold": "Standard_B2s",
-                "large_payer_threshold": "Standard_B4ms"
+        "categories": {
+            "general-purpose": {
+                "small_payer_threshold": "Standard_D2as_v4",
+                "large_payer_threshold": "Standard_D16as_v4"
             },
-            "balanced": {
-                "small_payer_threshold": "Standard_D2s_v3",
-                "large_payer_threshold": "Standard_D4s_v3"
+            "memory-optimized": {
+                "small_payer_threshold": "Standard_E2as_v5",
+                "large_payer_threshold": "Standard_E16as_v5"
             },
-            "performance-first": {
-                "small_payer_threshold": "Standard_F4s_v2",
-                "large_payer_threshold": "Standard_F8s_v2"
+            "compute-optimized": {
+                "small_payer_threshold": "Standard_F2s_v2",
+                "large_payer_threshold": "Standard_F16s_v2"
             }
         }
     },
@@ -124,18 +122,18 @@ SERVER_CATALOG = [
         "name": "Surround Server",
         "workload_type": "application",
         "description": "Server for Surround workloads.",
-        "tiers": {
-            "cost-optimized": {
-                "small_payer_threshold": "Standard_B2s",
-                "large_payer_threshold": "Standard_B4ms"
+        "categories": {
+            "general-purpose": {
+                "small_payer_threshold": "Standard_D2as_v4",
+                "large_payer_threshold": "Standard_D16as_v4"
             },
-            "balanced": {
-                "small_payer_threshold": "Standard_D2s_v3",
-                "large_payer_threshold": "Standard_D4s_v3"
+            "memory-optimized": {
+                "small_payer_threshold": "Standard_E2as_v5",
+                "large_payer_threshold": "Standard_E16as_v5"
             },
-            "performance-first": {
-                "small_payer_threshold": "Standard_F4s_v2",
-                "large_payer_threshold": "Standard_F8s_v2"
+            "compute-optimized": {
+                "small_payer_threshold": "Standard_F2s_v2",
+                "large_payer_threshold": "Standard_F16s_v2"
             }
         }
     },
@@ -156,36 +154,43 @@ STORAGE_CATALOG = [
 ]
 
 
-def get_azure_recommendations(subscriber_count, price_tolerance):
+def get_azure_recommendations(subscriber_count, server_configs):
     """
-    Generates a list of recommended Azure resources dynamically from the catalog.
+    Generates a list of recommended Azure resources dynamically from the catalog
+    based on the category selected for each server.
     """
     recommendations = {}
     
-    # Iterate through our dynamic catalog to build the recommendations
-    for server_type in SERVER_CATALOG:
+    # A mapping from the server name in the catalog to its details
+    server_catalog_map = {server["name"]: server for server in SERVER_CATALOG}
+
+    # Iterate through the server configurations from the frontend
+    for server_name, config in server_configs.items():
+        server_type_info = server_catalog_map.get(server_name)
+        if not server_type_info:
+            continue
+
+        category = config.get("category")
+        if not category:
+            continue
+
         vm_series = ""
-        tier = server_type["tiers"][price_tolerance]
+        category_tiers = server_type_info["categories"].get(category)
         
-        if subscriber_count < 1000000:
-            vm_series = tier["small_payer_threshold"]
-        else:
-            vm_series = tier["large_payer_threshold"]
+        if category_tiers:
+            if subscriber_count < 1000000:
+                vm_series = category_tiers["small_payer_threshold"]
+            else:
+                vm_series = category_tiers["large_payer_threshold"]
             
-        recommendations[server_type["name"]] = {
+        recommendations[server_name] = {
             "vm_series": vm_series,
-            "workload_type": server_type["workload_type"],
+            "workload_type": server_type_info["workload_type"],
         }
     
-    
-    # Also add the storage recommendation
-    for storage_type in STORAGE_CATALOG:
-        storage_sku = storage_type["tiers"][price_tolerance]
-        recommendations[storage_type["name"]] = {
-            "storage_sku": storage_sku,
-            "workload_type": storage_type["workload_type"],
-            "name": storage_type["name"]
-        }
+    # Note: Storage recommendation is now de-coupled from server recommendations
+    # as it's not tied to a specific server's category.
+    # We can add a separate UI for storage options later if needed.
 
     return recommendations
 
@@ -288,12 +293,10 @@ def fetch_all_storage_prices(region="eastus"):
 
     return all_prices
 
-# This function has been updated to accept the `server_counts` dictionary
-def get_total_estimated_monthly_cost(environment_name, subscriber_count, price_tolerance, region="eastus", operating_system="windows", hours_in_month=730, server_counts={}):
+def get_total_estimated_monthly_cost(environment_name, subscriber_count, price_tolerance, region="eastus", operating_system="windows", hours_in_month=730, server_configs={}):
     """
     Calculates the total estimated monthly cost for an environment using a pre-fetched price list and dynamic server counts.
     """
-    # Fetch all VM and storage prices once before calculating
     vm_prices = fetch_all_vm_prices(region=region, operating_system=operating_system)
     storage_prices = fetch_all_storage_prices(region)
     
@@ -301,7 +304,7 @@ def get_total_estimated_monthly_cost(environment_name, subscriber_count, price_t
         print("\nFailed to fetch pricing data. Cannot calculate costs.")
         return {}, 0.0
 
-    recommendations = get_azure_recommendations(subscriber_count, price_tolerance)
+    recommendations = get_azure_recommendations(subscriber_count, server_configs)
     total_cost = 0.0
     
     print(f"\n--- Pricing Estimate for {environment_name}: {subscriber_count} Subscribers ({price_tolerance.upper()}) ---")
@@ -309,11 +312,14 @@ def get_total_estimated_monthly_cost(environment_name, subscriber_count, price_t
     itemized_costs = {}
     
     for server_name, config in recommendations.items():
+        server_config_from_user = server_configs.get(server_name, {})
+        server_count = server_config_from_user.get("count", 0)
+
+        if server_count == 0:
+            continue
+
         if config["workload_type"] == "database" or config["workload_type"] == "application":
             vm_sku = config["vm_series"]
-            # Use the count from the server_counts dictionary, or default to 1
-            server_count = server_counts.get(server_name, 1)
-            
             hourly_price = vm_prices.get(vm_sku)
             
             if hourly_price is not None:
@@ -323,41 +329,39 @@ def get_total_estimated_monthly_cost(environment_name, subscriber_count, price_t
                 itemized_costs[server_name] = {
                     "sku": vm_sku,
                     "count": server_count,
+                    "category": server_config_from_user.get("category", "N/A"),
                     "monthly_cost": monthly_cost
                 }
             else:
                 print(f"- Could not find price for {server_name} ({vm_sku}).")
-        
-        elif config["workload_type"] == "storage":
-            storage_sku = config["storage_sku"]
-            storage_name = config["name"]
-            # We'll assume a default storage size, this can be made dynamic later
-            storage_size_gb = 1024 # Example: 1 TB
-            
-            # The pricing API's `skuName` for Managed Disks has a different format, so we need to adjust the key to retrieve the price
-            if storage_sku == "Standard_SSD_LRS_Disk_Size_P10":
-                api_sku = "Standard SSD LRS Disk Size P10"
-            elif storage_sku == "Premium_SSD_LRS_Disk_Size_P20":
-                api_sku = "Premium SSD LRS Disk Size P20"
-            elif storage_sku == "Premium_SSD_LRS_Disk_Size_P30":
-                api_sku = "Premium SSD LRS Disk Size P30"
-            else:
-                api_sku = storage_sku
 
-            monthly_price_per_gb = storage_prices.get(api_sku)
-            
-            if monthly_price_per_gb is not None:
-                # Storage price is per GB, so we multiply by the size
-                monthly_cost = monthly_price_per_gb * storage_size_gb
-                total_cost += monthly_cost
-                print(f"- {storage_name} ({storage_sku}): ${monthly_cost:.2f} per month")
-                itemized_costs[storage_name] = {
-                    "sku": storage_sku,
-                    "count": storage_size_gb,
-                    "monthly_cost": monthly_cost
-                }
-            else:
-                print(f"- Could not find price for {storage_sku}.")
+    # Handle storage separately
+    storage_tier = STORAGE_CATALOG[0]['tiers'][price_tolerance]
+    storage_name = STORAGE_CATALOG[0]['name']
+    storage_size_gb = 1024  # Example: 1 TB
+
+    if storage_tier == "Standard_SSD_LRS_Disk_Size_P10":
+        api_sku = "Standard SSD LRS Disk Size P10"
+    elif storage_tier == "Premium_SSD_LRS_Disk_Size_P20":
+        api_sku = "Premium SSD LRS Disk Size P20"
+    elif storage_tier == "Premium_SSD_LRS_Disk_Size_P30":
+        api_sku = "Premium SSD LRS Disk Size P30"
+    else:
+        api_sku = storage_tier
+
+    monthly_price_per_gb = storage_prices.get(api_sku)
+    if monthly_price_per_gb is not None:
+        monthly_cost = monthly_price_per_gb * storage_size_gb
+        total_cost += monthly_cost
+        print(f"- {storage_name} ({storage_tier}): ${monthly_cost:.2f} per month")
+        itemized_costs[storage_name] = {
+            "sku": storage_tier,
+            "count": storage_size_gb,
+            "monthly_cost": monthly_cost,
+            "category": price_tolerance
+        }
+    else:
+        print(f"- Could not find price for {storage_tier}.")
 
     print(f"\nTOTAL ESTIMATED MONTHLY COST: ${total_cost:.2f}")
     
